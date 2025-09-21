@@ -1,4 +1,8 @@
-export { lenientFormat, namedLenientFormat } from './helpers/stringHelpers';
+export {
+  getNamedKeys,
+  lenientFormat,
+  namedLenientFormat,
+} from './helpers/stringHelpers';
 
 export {
   createEndpointHandler,

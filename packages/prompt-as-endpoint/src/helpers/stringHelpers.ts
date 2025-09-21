@@ -11,3 +11,9 @@ export const namedLenientFormat = (
   input: string,
   params: Record<string, string>
 ): string => input.replace(/{(\w+)}/g, (match, key) => params[key] || match);
+
+/** Takes in a string and returns all the named keys in the string
+ * e.g. getNamedKeys('Hello {name}') => ['name']
+ */
+export const getNamedKeys = (input: string): string[] =>
+  input.match(/{(\w+)}/g)?.map(match => match.replace(/[{}]/g, '')) || [];

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { lenientFormat, namedLenientFormat } from './stringHelpers';
+import {
+  getNamedKeys,
+  lenientFormat,
+  namedLenientFormat,
+} from './stringHelpers';
 
 describe('lenientFormat', () => {
   it.each<{
@@ -202,5 +206,101 @@ describe('namedLenientFormat', () => {
     expect(
       namedLenientFormat('Hello {name} {123} world', { name: 'John' })
     ).toBe('Hello John {123} world');
+  });
+});
+
+describe('getNamedKeys', () => {
+  it.each<{
+    input: string;
+    expected: string[];
+    description: string;
+  }>([
+    // Basic functionality
+    {
+      input: 'Hello {name}',
+      expected: ['name'],
+      description: 'single named key',
+    },
+    {
+      input: 'Hello {name}, you are {age} years old',
+      expected: ['name', 'age'],
+      description: 'multiple named keys',
+    },
+    {
+      input: '{first} {middle} {last}',
+      expected: ['first', 'middle', 'last'],
+      description: 'multiple keys in sequence',
+    },
+    // Empty cases
+    {
+      input: '',
+      expected: [],
+      description: 'empty string input',
+    },
+    {
+      input: 'Hello world',
+      expected: [],
+      description: 'input with no placeholders',
+    },
+    // Special cases
+    {
+      input: '{name} and {name} are friends',
+      expected: ['name', 'name'],
+      description: 'duplicate named keys',
+    },
+    {
+      input: 'User {user_id} has {total_2} items',
+      expected: ['user_id', 'total_2'],
+      description: 'keys with underscores and numbers',
+    },
+    {
+      input: '{Name} vs {name}',
+      expected: ['Name', 'name'],
+      description: 'case-sensitive keys',
+    },
+    {
+      input: 'Complex {userName} with {itemCount} and {userId}',
+      expected: ['userName', 'itemCount', 'userId'],
+      description: 'mixed camelCase and underscore keys',
+    },
+  ])('should handle $description', ({ input, expected }) => {
+    expect(getNamedKeys(input)).toEqual(expected);
+  });
+
+  it('should only match word characters in placeholder names', () => {
+    // Test non-word characters in placeholder names should not match
+    expect(getNamedKeys('Hello {name-test}')).toEqual([]);
+    expect(getNamedKeys('Price: ${price} and {tax.rate}%')).toEqual(['price']);
+    expect(getNamedKeys('Contact: {email@domain} or {phone#}')).toEqual([]);
+    expect(getNamedKeys('Invalid {user-name} but valid {userName}')).toEqual([
+      'userName',
+    ]);
+  });
+
+  it('should handle malformed placeholders gracefully', () => {
+    expect(getNamedKeys('Hello {name} {age world')).toEqual(['name']);
+    expect(getNamedKeys('Hello {name} age} world')).toEqual(['name']);
+    expect(getNamedKeys('Hello name} {age} world')).toEqual(['age']);
+    expect(getNamedKeys('{incomplete and {valid}')).toEqual(['valid']);
+  });
+
+  it('should handle numeric placeholders as word characters', () => {
+    // Note: purely numeric placeholders are matched since \w includes digits
+    expect(getNamedKeys('Hello {0} and {name}')).toEqual(['0', 'name']);
+    expect(getNamedKeys('{123} vs {abc123}')).toEqual(['123', 'abc123']);
+    expect(getNamedKeys('Mixed {0} {1} {name} {age}')).toEqual([
+      '0',
+      '1',
+      'name',
+      'age',
+    ]);
+  });
+
+  it('should handle edge cases with braces', () => {
+    expect(getNamedKeys('{}')).toEqual([]);
+    expect(getNamedKeys('{ }')).toEqual([]);
+    expect(getNamedKeys('{} {name} {}')).toEqual(['name']);
+    expect(getNamedKeys('{{name}}')).toEqual(['name']);
+    expect(getNamedKeys('{name}}')).toEqual(['name']);
   });
 });
