@@ -32,7 +32,7 @@ export const createEndpointHandler = <T extends z.ZodSchema>(
     let jsonResponse: unknown;
     try {
       jsonResponse = JSON.parse(response);
-    } catch (error) {
+    } catch {
       throw new Error(`LLM response is not valid JSON: ${response}`);
     }
 
