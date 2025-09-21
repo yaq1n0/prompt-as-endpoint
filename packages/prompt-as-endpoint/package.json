@@ -1,7 +1,7 @@
 {
   "name": "prompt-as-endpoint",
   "version": "1.0.0",
-  "description": "A simple TypeScript function for demonstration purposes",
+  "description": "Simple helper library for making HTTP endpoints that use LLMs to return schema-validated JSON responses.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -33,21 +33,24 @@
   },
   "keywords": [
     "typescript",
-    "npm",
-    "package",
-    "demo"
+    "llm",
+    "http",
+    "endpoint",
+    "json",
+    "schema",
+    "validation"
   ],
-  "author": "",
+  "author": "Yaqin Hasan",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/prompt-as-endpoint.git",
+    "url": "git+https://github.com/yaq1n0/prompt-as-endpoint.git",
     "directory": "packages/prompt-as-endpoint"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/prompt-as-endpoint/issues"
+    "url": "https://github.com/yaq1n0/prompt-as-endpoint/issues"
   },
-  "homepage": "https://github.com/yourusername/prompt-as-endpoint#readme",
+  "homepage": "https://github.com/yaq1n0/prompt-as-endpoint#readme",
   "devDependencies": {
     "@types/node": "^24.5.2",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
@@ -66,6 +69,6 @@
     "access": "public"
   },
   "dependencies": {
-    "zod": "^4.1.9"
+    "zod": "^4.1.11"
   }
 }
