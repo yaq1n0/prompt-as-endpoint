@@ -7,7 +7,21 @@ import {
   type MockedFunction,
 } from 'vitest';
 import { z } from 'zod';
-import { createEndpointHandler, type LLMCall } from './createEndpointHandler';
+import {
+  createEndpointHandler,
+  isValidInput,
+  type LLMCall,
+} from './createEndpointHandler';
+
+describe('isValidInput', () => {
+  it('should return true for a record of string keys and string values', () => {
+    expect(isValidInput({ firstName: 'John', lastName: 'Doe' })).toBe(true);
+  });
+
+  it('should return false for a record of string keys and non-string values', () => {
+    expect(isValidInput({ firstName: 'John', lastName: 19876 })).toBe(false);
+  });
+});
 
 describe('createEndpointHandler', () => {
   const greetResponseSchema = z.object({

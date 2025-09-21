@@ -4,6 +4,13 @@ import { namedLenientFormat } from './stringHelpers';
 /** A function that calls an LLM and returns the response */
 export type LLMCall = (prompt: string) => Promise<string>;
 
+/** Little function to assert that the typically unknown input is a Record<string, string>
+ * that can be used to populate a prompt that's used by createEndpointHandler */
+export const isValidInput = (x: unknown): x is Record<string, string> =>
+  x != null &&
+  typeof x === 'object' &&
+  Object.values(x).every(v => typeof v === 'string');
+
 /** This function creates a function that can be used as a handler for a server endpoint
  *
  * The server endpoint handler generated follows the following type:
