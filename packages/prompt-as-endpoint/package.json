@@ -25,11 +25,11 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "prettier:check": "prettier --check src",
+    "prettier": "prettier --check src",
     "prettier:fix": "prettier --write src",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build && npm run test && npm run lint"
+    "prepublishOnly": "npm run clean && npm run build && npm run type-check && npm run test && npm run lint && npm run prettier"
   },
   "keywords": [
     "typescript",
