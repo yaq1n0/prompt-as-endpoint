@@ -11,6 +11,12 @@ export const isValidInput = (x: unknown): x is Record<string, string> =>
   typeof x === 'object' &&
   Object.values(x).every(v => typeof v === 'string');
 
+/** Options for the createEndpointHandler function */
+export type CreateEndpointHandlerOptions = {
+  /** the keys that are required to be present in the input (validated before making the LLM call) */
+  requiredKeys?: string[];
+};
+
 /** This function creates a function that can be used as a handler for a server endpoint
  *
  * The server endpoint handler generated follows the following type:
@@ -22,9 +28,19 @@ export const isValidInput = (x: unknown): x is Record<string, string> =>
 export const createEndpointHandler = <T extends z.ZodSchema>(
   outputType: T,
   prompt: string,
-  call: LLMCall
+  call: LLMCall,
+  options: CreateEndpointHandlerOptions = {}
 ): ((input: Record<string, string>) => Promise<z.infer<T>>) => {
   return async (input: Record<string, string>) => {
+    if (options.requiredKeys?.length) {
+      // check that all the required keys are present in the input
+      const missingKeys = options.requiredKeys.filter(key => !input[key]);
+      if (missingKeys.length)
+        throw new Error(
+          `Missing required keys in input: ${missingKeys.join(', ')}`
+        );
+    }
+
     const populatedPrompt = namedLenientFormat(prompt, input);
     const response = await call(populatedPrompt);
 
