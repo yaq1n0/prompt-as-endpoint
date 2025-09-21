@@ -1,6 +1,6 @@
 {
   "name": "prompt-as-endpoint",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple helper library for making HTTP endpoints that use LLMs to return schema-validated JSON responses.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

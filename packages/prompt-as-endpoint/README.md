@@ -1,6 +1,6 @@
 # prompt-as-endpoint
 
-A simple TypeScript function for demonstration purposes.
+Helper library for creating HTTP endpoints that use LLMs to return schema-validated JSON responses.
 
 ## Installation
 
@@ -11,79 +11,37 @@ npm install prompt-as-endpoint
 ## Usage
 
 ```typescript
-import { helloWorld } from 'prompt-as-endpoint';
+import { createEndpointHandler } from 'prompt-as-endpoint';
+import { z } from 'zod';
 
-helloWorld(); // Logs: "hello world"
+// Define your response schema
+const schema = z.object({
+  greeting: z.string(),
+  mood: z.string(),
+});
+
+// Wrap your llm call
+const call = async prompt => {
+  // Call your LLM here
+  const response = await llm.call(prompt);
+  return response; // Should return JSON string
+};
+
+// Create handler
+const handler = createEndpointHandler(
+  schema,
+  'Greet {name} in a {style} way',
+  call
+);
+
+// Adapt your web framework to the the handler (framework dependent)
+const wrapHandler = (..., handler) => {... handler() ... }
+
+// Use in your endpoint
+app.mapGet('/greet', wrapHandler(..., handler);
+
+// Returns validated { greeting: string, mood: string }
 ```
-
-### CommonJS
-
-```javascript
-const { helloWorld } = require('prompt-as-endpoint');
-
-helloWorld(); // Logs: "hello world"
-```
-
-## API
-
-### `helloWorld()`
-
-A simple function that logs "hello world" to the console.
-
-**Returns:** `void`
-
-## Development
-
-### Prerequisites
-
-- Node.js >= 22.0.0
-- npm >= 8.0.0
-
-### Scripts
-
-```bash
-# Build the package
-npm run build
-
-# Run tests
-npm run test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
-
-# Lint code
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Format code
-npm run format
-
-# Check formatting
-npm run format:check
-
-# Type check
-npm run typecheck
-
-# Clean build artifacts
-npm run clean
-```
-
-### Building
-
-The package is built using [tsup](https://tsup.egoist.dev/) and outputs:
-
-- `dist/index.js` - CommonJS format
-- `dist/index.mjs` - ES Module format
-- `dist/index.d.ts` - TypeScript declarations
-
-### Testing
-
-Tests are written using [Vitest](https://vitest.dev/) and can be found in `src/*.test.ts` files.
 
 ## License
 
