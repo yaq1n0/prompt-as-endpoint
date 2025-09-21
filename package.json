@@ -12,7 +12,9 @@
     "lint:fix": "npm run lint:fix --workspaces",
     "prettier": "npm run prettier --workspaces",
     "prettier:fix": "npm run prettier:fix --workspaces",
-    "clean": "rm -rf packages/*/dist"
+    "clean": "rm -rf packages/*/dist",
+    "demo:dev": "npm run build && cd packages/prompt-as-endpoint-demo && npm run dev",
+    "demo:start": "npm run build && cd packages/prompt-as-endpoint-demo && npm run build && npm run start"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.44.0",
