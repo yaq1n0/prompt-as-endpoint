@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server';
 import { Context, Hono } from 'hono';
 import {
   createEndpointHandler,
+  getNamedKeys,
   isValidInput,
   type LLMCall,
 } from 'prompt-as-endpoint';
@@ -32,7 +33,8 @@ const mockLLMCall: LLMCall = async (prompt: string): Promise<string> => {
 };
 
 // Create the greeting endpoint handler
-const greetPrompt = 'Greet {firstName} {lastName}';
+const greetPrompt = 'Greet {firstName} {lastName}'; // this could come from a .txt file or something in most cases
+const requiredKeys = getNamedKeys(greetPrompt);
 const greetResponseSchema = z.object({
   peopleGreeted: z.number(),
   greetingTitle: z.string(),
@@ -41,7 +43,10 @@ const greetResponseSchema = z.object({
 const handleGreet = createEndpointHandler(
   greetResponseSchema,
   greetPrompt,
-  mockLLMCall
+  mockLLMCall,
+  {
+    requiredKeys,
+  }
 );
 
 // Root endpoint with basic info
